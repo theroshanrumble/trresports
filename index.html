@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Roshan Rumble – TRR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="The Roshan Rumble (TRR) – community Dota 2 league with live auctions, strict rules and a no-smurf policy." />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #030712;
+      --accent: #f97316;
+      --accent-soft: rgba(249, 115, 22, 0.15);
+      --accent2: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --card: rgba(15, 23, 42, 0.98);
+      --border: rgba(148, 163, 184, 0.35);
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-pill: 999px;
+      --shadow-xl: 0 24px 50px rgba(0, 0, 0, 0.75);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, rgba(249, 115, 22, 0.16), transparent 55%),
+                  radial-gradient(circle at bottom, #020617 0, #000 60%);
+      color: var(--text);
+      line-height: 1.7;
+      padding-top: 96px; /* for sticky header */
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    /* ---------- Sticky Header ---------- */
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: linear-gradient(to bottom, rgba(3,7,18,0.98), rgba(3,7,18,0.95));
+      border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 0 0 2px rgba(248, 250, 252, 0.08), 0 16px 30px rgba(15, 23, 42, 0.9);
+      background: #000;
+    }
+
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .brand-text-title {
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand-text-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 13px;
+      text-decoration: none;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    nav a:hover {
+      background: rgba(30, 64, 175, 0.95);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* ---------- HERO ---------- */
+
+    .hero {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(6, 182, 212, 0.2), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.22), transparent 55%),
+        linear-gradient(135deg, #020617, #030712);
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 40px;
+      isolation: isolate;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('trr-hero.jpg') center top / cover no-repeat;
+      opacity: 0.22;
+      transform: scale(1.06);
+      filter: saturate(1.1);
+      z-index: -2;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 0, rgba(3, 7, 18, 0.9) 65%);
+      z-index: -1;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+      gap: 40px;
+      padding: 40px 40px 36px;
+    }
+
+    .hero-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .hero-badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at center, #22c55e, #166534);
+      box-shadow: 0 0 8px rgba(34,197,94,0.8);
+    }
+
+    .hero-badge-pill {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(15,23,42,0.92);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    .hero-title {
+      font-size: 34px;
+      line-height: 1.15;
+      margin: 0 0 10px;
+    }
+
+    .hero-title span.highlight {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin: 0 0 20px;
+      color: #cbd5f5;
+      font-size: 14px;
+      max-width: 460px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .btn-primary,
+    .btn-ghost {
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, #f97316, #fb923c);
+      color: #111827;
+      box-shadow: 0 18px 35px rgba(248, 113, 22, 0.45);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(30, 64, 175, 0.9);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .hero-footnote {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .hero-card {
+      background: rgba(15, 23, 42, 0.94);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      padding: 12px 14px;
+      font-size: 12px;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-card-label {
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .hero-card-value {
+      font-weight: 700;
+    }
+
+    /* ---------- Generic section styling ---------- */
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.65);
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ---------- Champions ---------- */
+
+    .champ-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .champ-card {
+      background: radial-gradient(circle at top, rgba(249, 115, 22, 0.18), rgba(15,23,42,0.98));
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 16px 18px 14px;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.7);
+      font-size: 13px;
+    }
+
+    .champ-season {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .champ-team {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .champ-roster {
+      color: var(--muted);
+    }
+
+    /* ---------- Video & Gallery ---------- */
+
+    .video-wrapper {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.7);
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 360px;
+      border: 0;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: #020617;
+      height: 120px;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .gallery-tag {
+      position: absolute;
+      left: 10px;
+      bottom: 8px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+
+    /* ---------- Team ---------- */
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .team-card {
+      background: var(--card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 14px 16px 12px;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.65);
+      font-size: 13px;
+    }
+
+    .team-role {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .team-names {
+      font-weight: 600;
+    }
+
+    /* ---------- Join CTA ---------- */
+
+    .cta {
+      background: radial-gradient(circle at top, rgba(249,115,22,0.2), rgba(15,23,42,0.98));
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 24px 22px 22px;
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 14px;
+    }
+
+    .cta-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .cta-sub {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ---------- Responsive ---------- */
+
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 28px 18px 22px;
+      }
+
+      body {
+        padding-top: 88px;
+      }
+
+      .header-inner {
+        padding-inline: 12px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        justify-content: flex-start;
+      }
+
+      .hero-title {
+        font-size: 26px;
+      }
+
+      .video-wrapper iframe {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-logo">
+        <a href="index.html">
+          <img src="trr-logo.png" alt="TRR Esports logo">
+        </a>
+      </div>
+      <div>
+        <div class="brand-text-title">The Roshan Rumble (TRR)</div>
+        <div class="brand-text-sub">Community Dota 2 League • SEA</div>
+      </div>
+    </div>
+
+    <nav>
+      <a href="#about">About</a>
+      <a href="#philosophy">Philosophy</a>
+      <a href="#seasons">Seasons</a>
+      <a href="#video">Highlight</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#team">TRR Team</a>
+      <a href="#join">Join Discord</a>
+      <a href="rules.html">Rules</a>
+      <a href="formats.html">Brackets</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section class="hero" id="about">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge-row">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-pill">Live community Dota 2 tournaments • SEA</span>
+        </div>
+
+        <h1 class="hero-title">
+          Welcome to <span class="highlight">The Roshan Rumble</span>
+        </h1>
+
+        <p class="hero-sub">
+          TRR is a structured community league with real captains, live auctions, strict rules and a no-smurf policy.
+          Built for players who show up, commit to their team and play the whole season.
+        </p>
+
+        <div class="hero-cta-row">
+          <a class="btn-primary" href="https://discord.gg/theroshanrumble" target="_blank" rel="noreferrer">
+            Join TRR Discord
+          </a>
+          <a class="btn-ghost" href="https://www.youtube.com/@TheRoshanRumble" target="_blank" rel="noreferrer">
+            Watch on YouTube
+          </a>
+        </div>
+
+        <div class="hero-footnote">
+          Currently preparing Season 6. Check Discord for registrations, auctions and schedules.
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-card">
+          <div class="hero-card-label">Seasons completed</div>
+          <div class="hero-card-value">5</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Players per season</div>
+          <div class="hero-card-value">100+ (avg)</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Formats</div>
+          <div class="hero-card-value">Auction • League • Playoffs</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-label">Default server</div>
+          <div class="hero-card-value">SEA (Singapore)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section id="philosophy">
+    <div class="section-header">
+      <div class="section-title">TRR Philosophy</div>
+      <div class="section-sub">Structure, fairness and fun for serious Dota enjoyers.</div>
+    </div>
+
+    <div class="card-grid-3">
+      <div class="card">
+        <h3>Structured League</h3>
+        <p>Captains selected by admins and a live auction to build balanced teams. Clear schedule, clear rules.</p>
+      </div>
+      <div class="card">
+        <h3>No Smurf Policy</h3>
+        <p>Strict anti-smurf investigation system, stand-in rules and Discord checks keep games fair for everyone.</p>
+      </div>
+      <div class="card">
+        <h3>Community First</h3>
+        <p>TRR is for players who want a proper league experience instead of random chaos lobbies.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEASONS & CHAMPIONS -->
+  <section id="seasons">
+    <div class="section-header">
+      <div class="section-title">Seasons & Champions</div>
+      <div class="section-sub">Five seasons completed, more to come.</div>
+    </div>
+
+    <div class="champ-grid">
+      <div class="champ-card">
+        <div class="champ-season">Season 1</div>
+        <div class="champ-team">Team Godspeed</div>
+        <div class="champ-roster">Godspeed, Toby, Narai, Atomic, GRIMM</div>
+      </div>
+      <div class="champ-card">
+        <div class="champ-season">Season 2</div>
+        <div class="champ-team">Team MSlayer</div>
+        <div class="champ-roster">MSlayer, Master Instinct, Phola, Billy, Nabeel</div>
+      </div>
+      <div class="champ-card">
+        <div class="champ-season">Season 3</div>
+        <div class="champ-team">Team Dynamite</div>
+        <div class="champ-roster">DynamonDon, Shiro, Chintan, Praharshit, Hussain</div>
+      </div>
+      <div class="champ-card">
+        <div class="champ-season">Season 4</div>
+        <div class="champ-team">Team Future</div>
+        <div class="champ-roster">Future, Im Still Noob, Chain Skooter, Deathshadow, Porthos</div>
+      </div>
+      <div class="champ-card">
+        <div class="champ-season">Season 5</div>
+        <div class="champ-team">Team Bull</div>
+        <div class="champ-roster">Bull, Kunaka, RockRobin, Dracarys, MSlayer</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHT VIDEO -->
+  <section id="video">
+    <div class="section-header">
+      <div class="section-title">Highlight Reel</div>
+      <div class="section-sub">Replace the link below with your favourite TRR montage.</div>
+    </div>
+
+    <div class="video-wrapper">
+      <!-- Replace the src with your real YouTube embed link -->
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="TRR Highlight"
+              allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="section-header">
+      <div class="section-title">Moments from TRR</div>
+      <div class="section-sub">You can swap these placeholders for real screenshots.</div>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="trr-hero.jpg" alt="TRR moment 1">
+        <span class="gallery-tag">Finals hype</span>
+      </div>
+      <div class="gallery-item">
+        <img src="trr-hero.jpg" alt="TRR moment 2">
+        <span class="gallery-tag">Auction night</span>
+      </div>
+      <div class="gallery-item">
+        <img src="trr-hero.jpg" alt="TRR moment 3">
+        <span class="gallery-tag">Community stacks</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRR TEAM -->
+  <section id="team">
+    <div class="section-header">
+      <div class="section-title">TRR Admin Team</div>
+      <div class="section-sub">People behind the chaos control.</div>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-role">Founder</div>
+        <div class="team-names">SlowFast</div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-role">Admins</div>
+        <div class="team-names">Reciprocal, Machine, Godspeed, Frost, Nikhil</div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-role">Official Streamers</div>
+        <div class="team-names">Banner, Havok4ever</div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-role">Mini Admins</div>
+        <div class="team-names">InsaneKid</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section id="join">
+    <div class="cta">
+      <div>
+        <div class="cta-title">Ready to play the next Season?</div>
+        <div class="cta-sub">
+          Join the Discord, watch the auction live and fight for Aegis-level bragging rights in The Roshan Rumble.
+        </div>
+      </div>
+
+      <div class="hero-cta-row">
+        <a class="btn-primary" href="https://discord.gg/theroshanrumble" target="_blank" rel="noreferrer">
+          Join TRR Discord
+        </a>
+        <a class="btn-ghost" href="https://www.youtube.com/@TheRoshanRumble" target="_blank" rel="noreferrer">
+          Follow on YouTube
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
